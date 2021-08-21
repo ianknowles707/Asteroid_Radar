@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.databinding.AsteroidItemViewBinding
 
-class AsteroidAdapter : ListAdapter<Asteroid, AsteroidAdapter.AsteroidViewHolder>(DiffCallback) {
+//RecyclerView adapter for the list of Asteroids displayed in the Main Fragment
+class AsteroidAdapter(val asteroidClickListener: AsteroidClickListener) :
+    ListAdapter<Asteroid, AsteroidAdapter.AsteroidViewHolder>(DiffCallback) {
 
     //Implement callback to check if data has been updated
     object DiffCallback : DiffUtil.ItemCallback<Asteroid>() {
@@ -19,9 +21,7 @@ class AsteroidAdapter : ListAdapter<Asteroid, AsteroidAdapter.AsteroidViewHolder
         override fun areContentsTheSame(oldItem: Asteroid, newItem: Asteroid): Boolean {
             return oldItem == newItem
         }
-
     }
-
 
     //OnCreateViewholder inflates the asteroid_list_item view for each displayed asteroid
     override fun onCreateViewHolder(
@@ -37,7 +37,15 @@ class AsteroidAdapter : ListAdapter<Asteroid, AsteroidAdapter.AsteroidViewHolder
     override fun onBindViewHolder(holder: AsteroidViewHolder, position: Int) {
         val asteroid = getItem(position)
         holder.bind(asteroid)
+        holder.itemView.setOnClickListener {
+            asteroidClickListener.onClick(asteroid)
+        }
     }
+
+    class AsteroidClickListener(val clickListener: (Asteroid: Asteroid) -> Unit) {
+        fun onClick(asteroid: Asteroid) = clickListener(asteroid)
+    }
+
 
     class AsteroidViewHolder(private var binding: AsteroidItemViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -47,7 +55,6 @@ class AsteroidAdapter : ListAdapter<Asteroid, AsteroidAdapter.AsteroidViewHolder
             binding.asteroid = asteroid
             binding.executePendingBindings()
         }
-
     }
 
 

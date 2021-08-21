@@ -1,5 +1,6 @@
 package com.udacity.asteroidradar.main
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,13 @@ class MainViewModel : ViewModel() {
 
     val asteroids: LiveData<List<Asteroid>>
         get() = _asteroids
+
+    //Define encapsulated variable to handle navigation to the Detail Fragment
+    private val _showSelectedAsteroid = MutableLiveData<Asteroid>()
+
+    val showSelectedAsteroid: LiveData<Asteroid>
+        get() = _showSelectedAsteroid
+
 
     init {
         //Temporary data for testing the RecyclerView and arguments to Detail Fragment.
@@ -81,5 +89,15 @@ class MainViewModel : ViewModel() {
     }
     //End of init block
 
+    //Set the navigation handler to take the value of the selected Asteroid
+    fun displaySelectedAsteroidDetails(asteroid: Asteroid) {
+        _showSelectedAsteroid.value = asteroid
+        Log.i("Check", "Nav signalled")
+    }
+
+    //Reset the navigation handler to null to signify navigation complete
+    fun doneDisplayingAsteroidDetails() {
+        _showSelectedAsteroid.value = null
+    }
 
 }
