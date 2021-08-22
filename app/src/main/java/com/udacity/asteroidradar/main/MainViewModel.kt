@@ -30,8 +30,7 @@ class MainViewModel : ViewModel() {
 
     init {
 
-        val today = getToday()
-        getAsteroids(today, Constants.API_KEY)
+        getAsteroids(getToday())
 
 //        //Temporary data for testing the RecyclerView and arguments to Detail Fragment.
 //        //TO REMOVE WHEN FINISHED
@@ -118,10 +117,16 @@ class MainViewModel : ViewModel() {
         return dateFormat.format(currentTime)
     }
 
-    private fun getAsteroids(today: String, key: String) {
+    //Function calls the Asteroid API retrofit service which returns the result as a String.
+    //Result is then converted to JSONObject and passed to the parsing function to generate
+    //the list of Asteroids
+    private fun getAsteroids(today: String) {
         viewModelScope.launch {
             try {
-                var returnResult = AsteroidAPI.retrofitService.getAsteroids(today, "", key)
+                val returnResult = AsteroidAPI.retrofitService.getAsteroids(
+                    today,
+                    Constants.API_KEY
+                )
                 _asteroids.value = parseAsteroidsJsonResult(JSONObject(returnResult))
             } catch (e: Exception) {
                 //Handle error here
