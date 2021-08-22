@@ -9,7 +9,7 @@ import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.databinding.AsteroidItemViewBinding
 
 //RecyclerView adapter for the list of Asteroids displayed in the Main Fragment
-class AsteroidAdapter(val asteroidClickListener: AsteroidClickListener) :
+class AsteroidAdapter(private val asteroidClickListener: AsteroidClickListener) :
     ListAdapter<Asteroid, AsteroidAdapter.AsteroidViewHolder>(DiffCallback) {
 
     //Implement callback to check if data has been updated
