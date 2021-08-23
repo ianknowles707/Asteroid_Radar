@@ -1,25 +1,22 @@
 package com.udacity.asteroidradar.main
 
 import android.app.Application
-import androidx.lifecycle.*
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.Asteroid
-import com.udacity.asteroidradar.Constants
-import com.udacity.asteroidradar.api.AsteroidAPI
-import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
 import com.udacity.asteroidradar.data.AsteroidRepository
 import com.udacity.asteroidradar.data.getDatabase
 import kotlinx.coroutines.launch
-import org.json.JSONObject
-import java.text.SimpleDateFormat
-import java.util.*
 
+@RequiresApi(Build.VERSION_CODES.N)
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    //Define encapsulated variable to hold the list of Asteroids retrieved from the network
-    private val _asteroids = MutableLiveData<List<Asteroid>>()
-
-    val asteroids: LiveData<List<Asteroid>>
-        get() = _asteroids
+    //Define variable to show Asteroid data
+    val showAsteroidList: LiveData<List<Asteroid>>
 
     //Define encapsulated variable to handle navigation to the Detail Fragment
     private val _showSelectedAsteroid = MutableLiveData<Asteroid>()
@@ -35,13 +32,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
 
-        getAsteroids(getToday())
+        //Call repository function to refresh database with new data
         viewModelScope.launch {
             asteroidRepository.updateAsteroids()
         }
 
-    }
+        //Get data to show in app from stored value in database
+        showAsteroidList = asteroidRepository.cachedAsteroids
 
+    }
 
     //Set the navigation handler to take the value of the selected Asteroid
     fun displaySelectedAsteroidDetails(asteroid: Asteroid) {
@@ -53,29 +52,5 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _showSelectedAsteroid.value = null
     }
 
-    //Define function to get today's date in correct format for network request
-    fun getToday(): String {
-        val calendar = Calendar.getInstance()
-        val currentTime = calendar.time
-        val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
-        return dateFormat.format(currentTime)
-    }
-
-    //Function calls the Asteroid API retrofit service which returns the result as a String.
-    //Result is then converted to JSONObject and passed to the parsing function to generate
-    //the list of Asteroids
-    private fun getAsteroids(today: String) {
-        viewModelScope.launch {
-            try {
-                val returnResult = AsteroidAPI.retrofitService.getAsteroids(
-                    today,
-                    Constants.API_KEY
-                )
-                _asteroids.value = parseAsteroidsJsonResult(JSONObject(returnResult))
-            } catch (e: Exception) {
-                //Handle error here
-            }
-        }
-    }
 
 }
