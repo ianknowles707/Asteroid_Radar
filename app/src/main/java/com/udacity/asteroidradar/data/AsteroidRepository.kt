@@ -1,7 +1,5 @@
 package com.udacity.asteroidradar.data
 
-import android.app.Application
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.udacity.asteroidradar.Asteroid
@@ -44,7 +42,7 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
     //Retrieve list of asteroids from the database by running the query, then converting to
     //Asteroid objects
     val cachedAsteroids: LiveData<List<Asteroid>> =
-        Transformations.map(database.asteroidDao.getAsteroids()){
+        Transformations.map(database.asteroidDao.getAsteroids(getToday())){
             it.asDomainModel()
         }
 

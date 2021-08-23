@@ -36,8 +36,8 @@ interface AsteroidDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg asteroid: DatabaseAsteroid)
 
-    @Query("SELECT * FROM asteroid_data ORDER BY date ASC")
-    fun getAsteroids(): LiveData<List<DatabaseAsteroid>>
+    @Query("SELECT * FROM asteroid_data WHERE asteroid_data.date >= date(:today) ORDER BY date(date) ASC")
+    fun getAsteroids(today: String): LiveData<List<DatabaseAsteroid>>
 }
 
 //Create the database abstract class, referring to the entities and DAO created above
