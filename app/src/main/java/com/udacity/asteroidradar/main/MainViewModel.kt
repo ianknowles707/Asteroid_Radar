@@ -63,7 +63,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _showSelectedAsteroid.value = null
     }
 
-    suspend fun getImageOfTheDay(): PictureOfDay? {
+     suspend fun getImageOfTheDay(): PictureOfDay? {
         var dailyImage: PictureOfDay? = null
         try {
             dailyImage = ImageApi.retrofitService.getImage(Constants.API_KEY)

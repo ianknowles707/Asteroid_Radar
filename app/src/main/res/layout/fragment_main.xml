@@ -29,8 +29,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
+                app:daily_image="@{viewModel.dailyImage.url}"
+                app:daily_image_description="@{viewModel.dailyImage.title}"
                 android:scaleType="centerCrop"
-                android:contentDescription="@{viewModel.dailyImage.title}"
                 app:srcCompat="@drawable/placeholder_picture_of_day" />
 
             <TextView
@@ -58,10 +59,10 @@
             app:layout_constraintTop_toBottomOf="@+id/activity_main_image_of_the_day_layout"
             app:layout_constraintVertical_bias="0.0"
             app:listData="@{viewModel.showAsteroidList}"
+            tools:itemCount="10"
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/asteroid_item_view"
-            tools:orientation="vertical"
-            tools:itemCount="10"/>
+            tools:orientation="vertical" />
 
         <ProgressBar
             android:id="@+id/status_loading_wheel"
