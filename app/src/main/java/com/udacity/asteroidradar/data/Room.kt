@@ -36,8 +36,17 @@ interface AsteroidDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg asteroid: DatabaseAsteroid)
 
+    //Get stored data for today only
+    @Query("SELECT * FROM asteroid_data WHERE asteroid_data.date = date(:today)")
+    fun getTodayAsteroids(today: String): LiveData<List<DatabaseAsteroid>>
+
+    //Get stored data for one week
     @Query("SELECT * FROM asteroid_data WHERE asteroid_data.date >= date(:today) ORDER BY date(date) ASC")
     fun getAsteroids(today: String): LiveData<List<DatabaseAsteroid>>
+
+    //Get all stored data
+    @Query("SELECT * FROM asteroid_data ORDER BY date(date) ASC")
+    fun getAllAsteroids(): LiveData<List<DatabaseAsteroid>>
 
     //Additional Query to delete old data from database
     @Query("DELETE FROM asteroid_data WHERE asteroid_data.date < date(:today)")

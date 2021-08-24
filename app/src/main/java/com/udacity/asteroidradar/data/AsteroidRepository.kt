@@ -5,12 +5,10 @@ import androidx.lifecycle.Transformations
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.api.AsteroidAPI
-import com.udacity.asteroidradar.api.ImageApi
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
-import retrofit2.HttpException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -40,12 +38,25 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
         }
     }
 
-    //Retrieve list of asteroids from the database by running the query, then converting to
+    //Retrieve full list of asteroids from the database by running the query, then converting to
     //Asteroid objects
     val cachedAsteroids: LiveData<List<Asteroid>> =
+        Transformations.map(database.asteroidDao.getAllAsteroids()) {
+            it.asDomainModel()
+        }
+
+    //Retrieve only asteroids with closest approach of today
+    val onlyTodayAsteroids: LiveData<List<Asteroid>> =
+        Transformations.map(database.asteroidDao.getTodayAsteroids(getToday())) {
+            it.asDomainModel()
+        }
+
+    //Retrieve one week of data
+    val oneWeeksAsteroids: LiveData<List<Asteroid>> =
         Transformations.map(database.asteroidDao.getAsteroids(getToday())) {
             it.asDomainModel()
         }
+
 
     //Test function to check database delete works - if OK remove this function and
     //add to scheduled worker task instead

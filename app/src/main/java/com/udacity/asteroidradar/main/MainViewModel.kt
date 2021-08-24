@@ -20,7 +20,7 @@ import retrofit2.HttpException
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     //Define variable to show Asteroid data
-    val showAsteroidList: LiveData<List<Asteroid>>
+    var showAsteroidList: LiveData<List<Asteroid>>
 
     //Define encapsulated variable to handle navigation to the Detail Fragment
     private val _showSelectedAsteroid = MutableLiveData<Asteroid>()
@@ -63,7 +63,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _showSelectedAsteroid.value = null
     }
 
-     suspend fun getImageOfTheDay(): PictureOfDay? {
+    suspend fun getImageOfTheDay(): PictureOfDay? {
         var dailyImage: PictureOfDay? = null
         try {
             dailyImage = ImageApi.retrofitService.getImage(Constants.API_KEY)
@@ -71,5 +71,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             //error handling
         }
         return dailyImage
+    }
+
+    fun menuShowAll() {
+        showAsteroidList = asteroidRepository.cachedAsteroids
+    }
+
+    fun menuShowToday() {
+        showAsteroidList = asteroidRepository.onlyTodayAsteroids
+    }
+
+    fun menuShowWeek(){
+        showAsteroidList=asteroidRepository.oneWeeksAsteroids
     }
 }

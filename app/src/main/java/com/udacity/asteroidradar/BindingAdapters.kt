@@ -15,6 +15,7 @@ fun setDailyImage(imageView: ImageView, url: String?) {
     Picasso.with(imageView.context).load(url).into(imageView)
 }
 
+//Define adapter to set image description
 @BindingAdapter("daily_image_description")
 fun setDescriptionOfDailyImage(imageView: ImageView, title: String?) {
     val context = imageView.context
