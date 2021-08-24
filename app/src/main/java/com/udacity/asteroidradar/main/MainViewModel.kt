@@ -8,9 +8,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.Constants
+import com.udacity.asteroidradar.PictureOfDay
+import com.udacity.asteroidradar.api.ImageApi
 import com.udacity.asteroidradar.data.AsteroidRepository
 import com.udacity.asteroidradar.data.getDatabase
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 @RequiresApi(Build.VERSION_CODES.N)
 class MainViewModel(application: Application) : AndroidViewModel(application) {
@@ -24,6 +28,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val showSelectedAsteroid: LiveData<Asteroid>
         get() = _showSelectedAsteroid
 
+    //Define encapsulated variable for image of the day
+    private val _dailyImage = MutableLiveData<PictureOfDay>()
+
+    val dailyImage: LiveData<PictureOfDay>
+        get() = _dailyImage
+
     //Get an instance of the database
     private val database = getDatabase(application)
 
@@ -34,6 +44,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
         //Call repository function to refresh database with new data
         viewModelScope.launch {
+            _dailyImage.value = getImageOfTheDay()
             asteroidRepository.updateAsteroids()
         }
 
@@ -52,5 +63,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _showSelectedAsteroid.value = null
     }
 
-
+    suspend fun getImageOfTheDay(): PictureOfDay? {
+        var dailyImage: PictureOfDay? = null
+        try {
+            dailyImage = ImageApi.retrofitService.getImage(Constants.API_KEY)
+        } catch (e: HttpException) {
+            //error handling
+        }
+        return dailyImage
+    }
 }

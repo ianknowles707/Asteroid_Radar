@@ -38,6 +38,10 @@ interface AsteroidDataDao {
 
     @Query("SELECT * FROM asteroid_data WHERE asteroid_data.date >= date(:today) ORDER BY date(date) ASC")
     fun getAsteroids(today: String): LiveData<List<DatabaseAsteroid>>
+
+    //Additional Query to delete old data from database
+    @Query("DELETE FROM asteroid_data WHERE asteroid_data.date < date(:today)")
+    fun clearData(today: String)
 }
 
 //Create the database abstract class, referring to the entities and DAO created above

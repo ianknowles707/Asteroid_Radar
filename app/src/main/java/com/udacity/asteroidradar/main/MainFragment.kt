@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.squareup.picasso.Picasso
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
 
@@ -28,6 +29,8 @@ class MainFragment : Fragment() {
 
         binding.viewModel = viewModel
 
+        setImageOfTheDay(binding)
+
         //Set the AsteroidAdapter to the RecyclerView in Main Fragment.
         // Add click listener which takes the Asteroid selected and passes it to the
         // viewModel function that will set the variable to enact navigation to the Detail Fragment
@@ -45,9 +48,16 @@ class MainFragment : Fragment() {
             }
 
         })
+
         setHasOptionsMenu(true)
 
         return binding.root
+    }
+
+    private fun setImageOfTheDay(binding: FragmentMainBinding) {
+            //Use Picasso to download the Image of the day, and set it to the imageView
+            Picasso.with(context).load(viewModel.dailyImage.value?.url)
+                .into(binding.activityMainImageOfTheDay)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
