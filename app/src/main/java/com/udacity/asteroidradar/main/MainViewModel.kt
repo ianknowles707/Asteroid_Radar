@@ -2,6 +2,7 @@ package com.udacity.asteroidradar.main
 
 import android.app.Application
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -42,10 +43,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
 
+        //Implement initial network call within a try...catch to allow for no Network access
+        //at startup
         //Call repository function to refresh database with new data
         viewModelScope.launch {
-            _dailyImage.value = getImageOfTheDay()
-            asteroidRepository.updateAsteroids()
+            try {
+                _dailyImage.value = getImageOfTheDay()
+                asteroidRepository.updateAsteroids()
+            }catch (e:Exception){
+                Log.e("MainViewModel_init", e.message!!)
+            }
+
+
         }
 
         //Get data to show in app from stored value in database
@@ -81,7 +90,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         showAsteroidList = asteroidRepository.onlyTodayAsteroids
     }
 
-    fun menuShowWeek(){
-        showAsteroidList=asteroidRepository.oneWeeksAsteroids
+    fun menuShowWeek() {
+        showAsteroidList = asteroidRepository.oneWeeksAsteroids
     }
 }

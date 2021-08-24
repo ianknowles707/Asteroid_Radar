@@ -58,10 +58,4 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
         }
 
 
-    //Test function to check database delete works - if OK remove this function and
-    //add to scheduled worker task instead
-    fun deleteDataBeforeToday() {
-        database.asteroidDao.clearData(getToday())
-    }
-
 }

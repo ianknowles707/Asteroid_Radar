@@ -12,7 +12,11 @@ import java.net.URL
 //Define adapter for image of the day
 @BindingAdapter("daily_image")
 fun setDailyImage(imageView: ImageView, url: String?) {
-    Picasso.with(imageView.context).load(url).into(imageView)
+    Picasso
+        .with(imageView.context)
+        .load(url)
+        .error(R.drawable.nasa_logo)
+        .into(imageView)
 }
 
 //Define adapter to set image description
